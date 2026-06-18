@@ -1,0 +1,248 @@
+---
+import {
+    getMediaURL,
+    getSectionModuleData,
+} from "../../lib/strapi";
+
+const {
+    heading_title,
+    background_image,
+    button,
+} = Astro.props;
+
+const sectionData =
+    await getSectionModuleData();
+
+const moduleSection =
+    sectionData.sections.find(
+        (section) =>
+            section.__component ===
+            "block.section-module"
+    );
+
+const products =
+    moduleSection?.products ?? [];
+
+const title =
+    heading_title?.title ??
+    moduleSection?.heading_title?.title;
+
+const description =
+    heading_title?.description ??
+    moduleSection?.heading_title?.description;
+
+const imageUrl =
+    background_image?.url
+        ? getMediaURL(background_image.url)
+        : moduleSection?.background_image?.url
+        ? getMediaURL(
+              moduleSection.background_image.url
+          )
+        : null;
+
+const sectionStyle = imageUrl
+    ? `
+        background-image: url('${imageUrl}');
+        background-size: cover;
+        background-position: center;
+      `
+    : "";
+---
+
+<section
+    class="module-section section container"
+    style={sectionStyle}
+>
+    <div class="module-overlay"></div>
+
+    <div class="module-top">
+        <div class="heading">
+            {title && <h1>{title}</h1>}
+
+            {description && <p>{description}</p>}
+
+            {button?.map((btn) => (
+                <a
+                    href={btn.btn_link}
+                    class={`btn btn-${btn.variant}`}
+                    target={btn.target ? "_blank" : "_self"}
+                >
+                    {btn.btn_text}
+                </a>
+            ))}
+        </div>
+    </div>
+</section>
+
+<div class="products-section">
+    <div class="products-grid container">
+        {products.length > 0 ? (
+            products.map((product) => {
+                const productImage = product.image?.url
+                    ? getMediaURL(product.image.url)
+                    : null;
+
+                return (
+                    <article class="product-card group">
+                        <a
+                            href={`/product/${product.slug}`}
+                            class="product-link"
+                        >
+                            <div class="product-image">
+                                {productImage && (
+                                    <img
+                                        src={productImage}
+                                        alt={product.title}
+                                    />
+                                )}
+
+                                <div class="product-overlay">
+                                    <span class="view-btn">
+                                        View Details
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="product-heading">
+                                <h3 class="product-title">
+                                    {product.title}
+                                </h3>
+
+                                <span class="inquire">
+                                    Inquire
+                                </span>
+                            </div>
+
+                            <div class="product-meta">
+                                {product.designers?.length > 0 && (
+                                    <p class="product-designer">
+                                        Designer:{" "}
+                                        {product.designers
+                                            .map(
+                                                (designer) =>
+                                                    designer.name
+                                            )
+                                            .join(", ")}
+                                    </p>
+                                )}
+
+                                {product.materials?.length > 0 && (
+                                    <p class="product-material">
+                                        Material:{" "}
+                                        {product.materials
+                                            .map(
+                                                (material) =>
+                                                    material.name
+                                            )
+                                            .join(", ")}
+                                    </p>
+                                )}
+                            </div>
+                        </a>
+                    </article>
+                );
+            })
+        ) : (
+            <p>No products selected.</p>
+        )}
+    </div>
+</div>
+
+<style>
+    .module-section {
+    position: relative;
+    min-height: 600px;
+    margin: 80px auto;
+    padding: 48px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.module-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(22 22 22 / 20%);
+}
+
+.module-top {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.heading h1,
+.heading p {
+    color: #fff;
+}
+
+.heading p {
+    opacity: 0.9;
+}
+
+.products-section {
+    margin-bottom: 80px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 48px;
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.product-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgb(0 0 0 / 10%);
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.view-btn {
+    padding: 12px 32px;
+    background: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.product-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.product-title {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.inquire {
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+}
+
+.product-meta p {
+    margin: 0 0 6px;
+    color: #666;
+    font-size: 14px;
+}
+</style>

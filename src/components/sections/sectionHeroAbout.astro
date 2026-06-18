@@ -1,0 +1,64 @@
+---
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL;
+
+const {
+ heading_title,
+  about_img_right
+} = Astro.props;
+const title = heading_title?.title;
+const sub_title = heading_title?.sub_title;
+const description = heading_title?.description;
+
+const imgUrl = about_img_right?.url
+  ? `${STRAPI_URL}${about_img_right.url}`
+  : null;
+---
+
+<section class="hero-about-section section">
+  <div class="container">
+    <div class="row">
+      <!-- Cột hiển thị nội dung -->
+      <div class="heading col-md-5">
+            <h3 class="sub-title">{sub_title}</h3>
+              <h2 class="heading-title">{title}</h2>
+              <p class="des">{description}</p>
+
+      </div>
+      <div class="col-md-2"></div>
+      <div class="col-md-5">
+  <div class="wp-img-right">
+    {imgUrl && (
+      <img
+        src={imgUrl}
+        alt={title}
+        class="img-fluid"
+      />
+    )}
+  </div>
+</div>
+    </div>
+  </div>
+ 
+</section>
+<style>
+  .wp-img-right {
+    position: relative;
+  }
+  .wp-img-right img {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  .wp-img-right:after {
+    content: "";
+    width: 12rem;
+    height: 12rem;
+    position: absolute;
+    bottom: -2.5rem;
+    left: -2.5rem;
+    background-color: rgb(217 197 178 / 0.2);
+  }
+  .row {
+    align-items: center;
+  }
+</style>

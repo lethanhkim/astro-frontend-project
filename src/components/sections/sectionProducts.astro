@@ -1,0 +1,461 @@
+---
+import {
+    getProducts,
+    getFilters,getMediaURL 
+} from "../../lib/strapi";
+
+const {
+    categories = [],
+    designers = [],
+    materials = [],
+} = await getFilters();
+
+const { heading_title } = Astro.props;
+
+const title = heading_title?.title;
+const subTitle = heading_title?.sub_title;
+const description = heading_title?.description;
+
+console.log("URL:", Astro.url.href);
+
+const category =
+    Astro.url.searchParams.get("category");
+
+const designer =
+    Astro.url.searchParams.get("designer");
+
+const material =
+    Astro.url.searchParams.get("material");
+
+console.log({
+    category,
+    designer,
+    material,
+});
+
+const products = await getProducts({
+    category,
+    designer,
+    material,
+});
+
+console.log("Products:", products);
+/* FILTER URL */
+function buildFilterUrl(type, value) {
+    const search = new URLSearchParams(
+        Astro.url.searchParams
+    );
+
+    if (value) {
+        search.set(type, value);
+    } else {
+        search.delete(type);
+    }
+
+    return `${Astro.url.pathname}?${search.toString()}`;
+}
+---
+
+<section class="product-section section">
+    <div class="container">
+
+        <div class="heading right">
+            <div class="heading-left">
+                {subTitle && (
+                    <h3 class="sub-title">
+                        {subTitle}
+                    </h3>
+                )}
+
+                {title && (
+                    <h2 class="heading-title">
+                        {title}
+                    </h2>
+                )}
+            </div>
+
+            {description && (
+                <p class="des">
+                    {description}
+                </p>
+            )}
+        </div>
+
+        <div class="product-filters">
+
+            <!-- CATEGORY -->
+            <div class="filter-item">
+                <button class="filter-toggle">
+                    CATEGORY
+                   <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                </button>
+
+                <div class="filter-dropdown">
+                    <a
+                        href={buildFilterUrl(
+                            "category",
+                            null
+                        )}
+                    >
+                        All Categories
+                    </a>
+
+                    {categories.map((item) => (
+                        <a
+                            href={buildFilterUrl(
+                                "category",
+                                item.slug
+                            )}
+                            class:list={[
+                                {
+                                    active:
+                                        category ===
+                                        item.slug,
+                                },
+                            ]}
+                        >
+                            {item.category_name}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+            <!-- MATERIAL -->
+            <div class="filter-item">
+                <button class="filter-toggle">
+                    MATERIAL
+                   <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                </button>
+
+                <div class="filter-dropdown">
+                    <a
+                        href={buildFilterUrl(
+                            "material",
+                            null
+                        )}
+                    >
+                        All Materials
+                    </a>
+
+                    {materials.map((item) => (
+                        <a
+                            href={buildFilterUrl(
+                                "material",
+                                item.slug
+                            )}
+                            class:list={[
+                                {
+                                    active:
+                                        material ===
+                                        item.slug,
+                                },
+                            ]}
+                        >
+                            {item.name}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+            <!-- DESIGNER -->
+            <div class="filter-item">
+                <button class="filter-toggle">
+                    DESIGNER
+                    <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                </button>
+
+                <div class="filter-dropdown">
+                    <a
+                        href={buildFilterUrl(
+                            "designer",
+                            null
+                        )}
+                    >
+                        All Designers
+                    </a>
+
+                    {designers.map((item) => (
+                        <a
+                            href={buildFilterUrl(
+                                "designer",
+                                item.slug
+                            )}
+                            class:list={[
+                                {
+                                    active:
+                                        designer ===
+                                        item.slug,
+                                },
+                            ]}
+                        >
+                            {item.name}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+<div class="products-grid container">
+    {
+        products.length > 0 ? (
+            products.map((product) => (
+                <article class="product-card group">
+
+                    <a
+                        href={`/product/${product.slug}`}
+                        class="product-link"
+                    >
+                        <div class="product-image">
+                            {
+                                product.image && (
+                                    <img
+                                        src={getMediaURL(
+                                            product.image.url
+                                        )}
+                                        alt={product.title}
+                                    />
+                                )
+                            }
+
+                            <div class="product-overlay">
+                                <span class="view-btn">
+                                    View Details
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-heading">
+                        <h3 class="product-title">
+                            {product.title}
+                        </h3>
+                        <span class="">Inquire</span>
+                        </div>
+                       
+
+                        <div class="product-meta">
+
+                            {
+                                product.designers?.length > 0 && (
+                                    <p class="product-designer">
+                                        Designer: {
+                                            product.designers
+                                                .map(
+                                                    (designer) =>
+                                                        designer.name
+                                                )
+                                                .join(", ")
+                                        }
+                                    </p>
+                                )
+                            }
+
+                            {
+                                product.materials?.length > 0 && (
+                                    <p class="product-material">
+                                        Material: {
+                                            product.materials
+                                                .map(
+                                                    (material) =>
+                                                        material.name
+                                                )
+                                                .join(", ")
+                                        }
+                                    </p>
+                                )
+                            }
+
+                        </div>
+
+                    </a>
+
+                </article>
+            ))
+        ) : (
+            <p>No products found.</p>
+        )
+    }
+</div>
+</section>
+
+<style>
+.sub-title {
+    color: #444748;
+    text-transform: uppercase;
+    font-family: "Hanken Grotesk", sans-serif;
+}
+
+.heading.right {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.des {
+    max-width: 384px;
+}
+
+.product-filters {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+
+.filter-item {
+    position: relative;
+}
+
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.filter-dropdown {
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 0;
+
+    min-width: 220px;
+    padding: 28px 32px;
+
+    background: #fff;
+
+    box-shadow:
+        0 20px 40px
+        rgba(0, 0, 0, 0.08);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(10px);
+
+    transition: all 0.25s ease;
+
+    z-index: 100;
+}
+
+.filter-item:hover .filter-dropdown {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+}
+
+.filter-dropdown a {
+    display: block;
+
+    margin-bottom: 16px;
+
+    color: #111;
+
+    text-decoration: none;
+}
+
+.filter-dropdown a:last-child {
+    margin-bottom: 0;
+}
+
+.filter-dropdown a.active {
+    font-weight: 700;
+}
+
+.products-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 32px;
+}
+
+.product-card {
+    border: 1px solid #eee;
+
+    padding: 24px;
+}
+
+.product-card img {
+    width: 100%;
+
+    height: auto;
+
+    display: block;
+
+    margin-bottom: 16px;
+}
+
+.product-card h3 {
+    margin-bottom: 16px;
+}
+.product-image {
+    position: relative
+}
+.product-overlay {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 500ms;
+}
+.view-btn {
+    font-family: Hanken Grotesk, sans-serif;
+    transition-duration: 300ms;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+        background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.75rem;
+    color: rgb(22 22 22 / var(--tw-text-opacity, 1));
+    padding-bottom: 0.75rem;
+}
+.product-card:hover .product-overlay {
+    opacity: 1;
+    transition-duration: 500ms;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+}
+.product-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.product-title {
+        font-size: 32px;
+    line-height: 40px;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: none;
+}
+a {
+    text-decoration: none;
+}
+.product-heading span {
+        padding-bottom: 0.125rem;
+    border-bottom: 1px solid;
+    color: #000;
+}
+.product-meta p {
+        color: #444748;
+        margin-bottom: 2px;
+}
+</style>

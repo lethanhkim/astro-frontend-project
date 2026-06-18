@@ -1,0 +1,108 @@
+---
+import { getMediaURL } from "../../lib/strapi";
+
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL;
+
+const {
+  heading_title,
+  sub_title,
+  description,
+  about_img,
+  muti_image,
+  button,
+  background_color
+} = Astro.props;
+
+const imgUrl = about_img?.url
+  ? `${STRAPI_URL}${about_img.url}`
+  : null;
+---
+
+<section  class={`about-section section ${background_color}`}>
+  <div class="container">
+    <div class="row">
+      <!-- Cột hiển thị nội dung -->
+      <div class="heading col-md-5">
+        <h3 class="sub-title">{sub_title}</h3>
+        <h2 class="heading-title">{heading_title}</h2>
+        <p class="des">{description}</p>
+        <!-- Hiển thị các button -->
+        <div class="mt-4">
+          {button && button.map((btn) => (
+            <a 
+              href={btn.btn_link} 
+              class={`btn btn-${btn.variant} me-2`}
+              target={btn.target ? "_blank" : "_self"}
+            >
+              {btn.btn_text}
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="col-md-7">
+  <div class="wp-img-right">
+    {imgUrl && (
+      <img
+        src={imgUrl}
+        alt={heading_title}
+        class="img-fluid"
+      />
+    )}
+  </div>
+  <div class="wp-multi-img">
+     {
+            muti_image?.map((img) => (
+              <div class="surface-image">
+                <img
+                  src={getMediaURL(img.url)}
+                  alt={img.alternativeText || img.name}
+                  loading="lazy"
+                />
+              </div>
+            ))
+          }
+  </div>
+     
+</div>
+    </div>
+  </div>
+ 
+</section>
+<style>
+  .wp-img-right {
+    position: relative;
+  }
+  .wp-img-right img {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  /* .wp-img-right:after {
+    content: "";
+    width: 12rem;
+    height: 12rem;
+    position: absolute;
+    bottom: -2.5rem;
+    left: -2.5rem;
+    background-color: rgb(217 197 178 / 0.2);
+  } */
+  .row {
+    align-items: center;
+  }
+  .sub-title {
+    color: #444748;
+    text-transform: uppercase;
+        font-family: Hanken Grotesk, sans-serif;
+  }
+  .about-section.grey {
+    background-color: #f3f3f4;
+  }
+  .wp-multi-img {
+        display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .surface-image:first-child {
+        aspect-ratio: 3 / 4;
+  }
+</style>

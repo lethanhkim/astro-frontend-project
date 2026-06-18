@@ -1,0 +1,40 @@
+---
+// Nhận dữ liệu từ index.astro
+const {  title, sub_title } = Astro.props;
+
+
+---
+
+<section class="client-say-section section">
+  <div class="container">
+    <div class="row">
+      <!-- Cột hiển thị nội dung -->
+      <div class="heading col-md-12">
+        <div class="material-symbols-outlined text-taupe text-4xl mb-stack-lg" data-icon="format_quote">format_quote</div>
+              <h2 class="heading-title">{title}</h2>
+              <p class="des">{sub_title}</p>
+
+      </div>
+    </div>
+  </div>
+ 
+</section>
+
+<style>
+  .heading {
+    text-align: center;
+    max-width: 65%;
+    margin: 0 auto;
+}
+.des {
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    font-size: 12px;
+}
+.material-symbols-outlined  {
+  color: #d9c5b2;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+      margin-bottom: 32px;
+}
+</style>

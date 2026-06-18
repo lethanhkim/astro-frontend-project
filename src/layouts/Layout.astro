@@ -1,0 +1,32 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/footer.astro";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/global.less"; 
+import "glightbox/dist/css/glightbox.min.css";
+
+const { seo = {} } = Astro.props;
+
+---
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{seo?.meta_title || "BlissHaven"}</title>
+    <meta name="description" content={seo?.meta_description || ""}/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import "bootstrap/dist/js/bootstrap.bundle.min.js";
+    </script>
+  </body>
+</html>

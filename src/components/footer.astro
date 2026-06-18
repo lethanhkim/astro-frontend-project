@@ -1,0 +1,87 @@
+---
+import { getGlobalData } from "../lib/strapi";
+
+const globalData = await getGlobalData();
+
+const footer = globalData.footer_item?.[0];
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="flex flex-col md:flex-row justify-between items-center px-grid-margin-desktop py-stack-lg gap-stack-md max-w-[1440px] mx-auto">
+
+    <div class="footer-top">
+      <a class="footer-logo" href="">
+        {footer.logo_text}
+      </a>
+        
+      <div class="footer-bottom">
+        <p> {footer.copyright_text} </p>
+      </div>
+    </div>
+        <ul class="footer-menu">
+            {footer?.menu_links?.map((item) => (
+          <li>
+            <a href={item.link}>
+              {item.title}
+            </a>
+          </li>
+        ))}
+        </ul>
+        <ul class="footer-social">
+          {footer?.social_item?.map((item) => (
+            <li>
+              <a href={item.links} aria-label={item.title}>
+                <span
+                  class="material-symbols-outlined"
+                  data-icon={item.title}
+                >
+                  {item.title}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+    </div>
+  </div>
+</footer>
+<style>
+    
+ footer {
+  background-color: #f3f3f4;
+  padding: 50px 0;
+}
+.footer-logo {
+    color: #000;
+  text-decoration: none;
+  font-size: 32px;
+  font-family: "EB Garamond", serif;
+}
+
+.footer-menu,
+.footer-social {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-menu a,
+.footer-social a {
+    color: #444748;
+  text-decoration: none;
+}
+.footer-bottom p {
+  margin: 0;
+}
+.footer-social a {
+        border: 1px solid #d9c5b24d;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>

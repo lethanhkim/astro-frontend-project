@@ -1,0 +1,83 @@
+---
+import {getHomeDataWithGallery,getMediaURL,} from "../../lib/strapi.js";
+
+const homeData = await getHomeDataWithGallery();
+
+// Tìm section gallery
+const gallerySection = homeData.sections.find(
+  (section) => section.__component === "block.section-gallery"
+);
+
+const title = gallerySection?.title;
+const gallery = gallerySection?.gallery;
+---
+
+<section class="gallery-section section">
+  <div class="container">
+
+    <h2 class="heading-text">{title}</h2>
+
+    <div class="row">
+
+      {gallery?.image?.map((item) => (
+        <div class={gallery.column || "col-lg-4"}>
+
+          <div class="gallery-item">
+
+              <a
+              href={getMediaURL(item.url)}
+              class="glightbox"
+              data-gallery="home-gallery"
+            >
+              <img
+                src={getMediaURL(item.url)}
+                alt={item.alternativeText || item.name}
+                loading="lazy"
+              />
+            </a>
+
+          </div>
+
+        </div>
+      ))}
+
+    </div>
+
+  </div>
+</section>
+
+
+<style>
+.gallery-section {
+  background: #f3f3f4;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.gallery-item {
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.gallery-item img {
+  width: 100%;
+  display: block;
+  transition: .3s;
+}
+
+.gallery-item:hover img {
+  scale: 1.1;
+}
+</style>
+
+<script>
+  import GLightbox from "glightbox";
+
+  GLightbox({
+    selector: ".glightbox",
+  });
+</script>

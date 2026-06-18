@@ -1,0 +1,58 @@
+---
+const {   heading_title, button } = Astro.props;
+---
+
+<section class="cta-banner-section section">
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="heading col-md-12">
+        <span class="sub-title">
+          {heading_title?.sub_title}
+        </span>
+
+        <h2 class="heading-title">
+          {heading_title?.title}
+        </h2>
+
+        <p class="description">
+          {heading_title?.description}
+        </p>
+        {
+        button?.map((item) => (
+          <a
+            href={item.btn_link}
+            class={`btn btn-${item.variant}`}
+            target={item.target ? "_blank" : "_self"}
+          >
+            {item.btn_text}
+          </a>
+        ))
+      }
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<style>
+    .cta-banner-section {
+        background-color: #161616;
+    }
+    .heading {
+        text-align: center;
+    }
+    p {
+        margin-bottom: 40px;
+        max-width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    p,
+    .heading-title {
+        color: #fff;
+    }
+</style>

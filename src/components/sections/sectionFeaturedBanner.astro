@@ -1,0 +1,55 @@
+---
+import { getMediaURL } from "../../lib/strapi";
+
+const { heading_title, image } = Astro.props;
+---
+
+<section class="featured-banner section">
+
+  <div class="container">
+
+    <div class="row align-items-center">
+
+      <div class="col-lg-7">
+
+        {image?.url && (
+          <img
+            src={getMediaURL(image.url)}
+            alt={image.alternativeText || heading_title?.title}
+            class="img-fluid"
+          />
+        )}
+
+      </div>
+      <div class="col-lg-5">
+
+        {heading_title?.sub_title && (
+          <span class="sub-title">
+            {heading_title.sub_title}
+          </span>
+        )}
+
+        <h2 class="heading-title">
+          {heading_title?.title}
+        </h2>
+
+        <p class="description">
+          {heading_title?.description}
+        </p>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+</section>
+<style>
+    img {
+        width: 100%;
+        object-fit: cover;
+            aspect-ratio: 16 / 9;
+    }
+</style>

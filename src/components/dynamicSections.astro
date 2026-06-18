@@ -1,0 +1,13 @@
+---
+const { sections = [], components = {} } = Astro.props;
+---
+
+{
+  sections.map((section) => {
+    const Component = components[section.__component];
+
+    return Component ? (
+      <Component {...section} />
+    ) : null;
+  })
+}
