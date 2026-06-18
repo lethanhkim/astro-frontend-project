@@ -36,6 +36,14 @@ const header = globalData.header_item;
       </li>
     ))}
   </ul>
+  <div class="flex items-center gap-stack-md">
+<button class="p-2 hover:opacity-70 transition-opacity duration-500">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+<button class="p-2 hover:opacity-70 transition-opacity duration-500">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
 
   <!-- CTA -->
   </nav>
@@ -84,24 +92,11 @@ font-size: 16px;
     font-family: Hanken Grotesk, sans-serif;
 }
 button {
-    background: #ECBA23;
-    position: relative;
-    font-size: 17px;
-    padding: 12px 38px 14px 38px !important;
-    border-radius: 50px;
-    z-index: 1;
-    text-transform: uppercase;
-    font-family: "Antonio", sans-serif;
-    transition: all 0.4s ease-in-out 0s;
-    font-weight: 700;
-    line-height: 28px;
-    letter-spacing: 1px;
-    color: #fff;
-    border: 1px solid #ECBA23;
+      border: 0;
+    background: transparent;
 }
-button:hover {
-      color: #ECBA23;
-    transition: all 0.4s ease-in-out 0s;
-    background-color: #fff;
+button span {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+          font-size: 20px;
 }
 </style>

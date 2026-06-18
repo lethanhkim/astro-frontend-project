@@ -1,14 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import DynamicSections from "../components/dynamicSections.astro";
-import { getAboutData } from "../lib/strapi";
+import { getHomeData ,getHomeSeo} from "../lib/strapi";
 import { sectionMapper } from "../lib/sectionMapper";
 
-const aboutData = await getAboutData();
-const sections = aboutData.sections;
+const homeData = await getHomeData();
+const homeSeo = await getHomeSeo();
+const sections = homeData.sections;
+const seo = homeSeo.SEO;
 ---
 
-<Layout title="About Us">
+<Layout seo={seo}>
   <DynamicSections
     sections={sections}
     components={sectionMapper}

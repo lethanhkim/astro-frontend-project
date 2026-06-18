@@ -1,0 +1,18 @@
+---
+// export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+import DynamicSections from "../../components/dynamicSections.astro";
+import { sectionMapper } from "../../lib/sectionMapper";
+import { getCollectionData } from "../../lib/strapi";
+
+const aboutData = await getCollectionData();
+const sections = aboutData.sections;
+---
+
+<Layout title="Collection">
+  <DynamicSections
+    sections={sections}
+    components={sectionMapper}
+  />
+</Layout>

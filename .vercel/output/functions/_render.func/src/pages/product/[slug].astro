@@ -1,0 +1,42 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { marked } from "marked";
+
+import { getProducts, getProduct } from "../../lib/strapi";
+
+export async function getStaticPaths() {
+    const products = await getProducts();
+
+    return products.map((product) => ({
+        params: {
+            slug: product.slug,
+        },
+    }));
+}
+const product = await getProduct(Astro.params.slug);
+
+const html = marked(product.content || "");
+---
+
+<Layout title="Collection">
+    <section class="single">
+        <div class="container">
+        <h1>{product.title}</h1>
+
+            {
+                product.featured_image && (
+                    <img
+                        src={`${import.meta.env.PUBLIC_STRAPI_URL}${product.featured_image.url}`}
+                        alt={product.title}
+                    />
+                )
+            }
+
+            {
+                product.content && (
+                   <div set:html={html}></div>
+                )
+            }
+        </div>
+    </section>
+</Layout>
